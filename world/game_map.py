@@ -12,8 +12,10 @@ class GameMap:
         self.playerY = playerY
 
 
+
 class MapGenerator:
     def __init__(self, width, height):
+        print("Instancing new Map Generator")
         self.width = width
         self.height = height
         self.tiles = self.initialize_tiles()
@@ -23,7 +25,7 @@ class MapGenerator:
         return tiles
 
     def generate_map(self, max_rooms, room_min_size, room_max_size, map_width, map_height):
-
+        print("Generating Map")
         playerStartX = int(it_config.map_width / 2)
         playerStartY = int(it_config.map_height / 2),
 
@@ -78,7 +80,28 @@ class MapGenerator:
                         # finally, append the new room to the list
                 rooms.append(new_room)
                 num_rooms += 1
-        map = GameMap(self.width, self.height, self.tiles, playerStartX, playerStartY)
+                map = self.encode_map(playerStartX, playerStartY)
+                return map
+
+    def encode_map(self, playerStartX, playerStartY):
+
+        tile_list = []
+        for y in range(self.height):
+            for x in range(self.width):
+                print("Parsing: " + str(y) + "/" + str(x))
+                if self.tiles[x][y].blocked:
+                    tile_list.append(0)
+                else:
+                    tile_list.append(1)
+
+        map = {
+            "COMMAND"   :   "MAPDATA",
+            "WIDTH"     :   self.width,
+            "HEIGHT"    :   self.height,
+            "TILES"     :   tile_list,
+            "PLAYERX"   :   playerStartX,
+            "PLAYERY"   :   playerStartY
+            }
         return map
 
     def create_room(self, room):

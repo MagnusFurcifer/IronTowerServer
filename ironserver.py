@@ -1,36 +1,31 @@
 #!/usr/bin/env python3
-import socket
+from twisted.internet.protocol import Protocol, Factory
+from twisted.internet import reactor
+from twisted.protocols.basic import LineReceiver
 import json
-import asyncio
-
 from world.game_map import GameMap, MapGenerator
 import it_config
 
-HOST = '127.0.0.1'  # Standard loopback interface address (localhost)
-PORT = 8080        # Port to listen on (non-privileged ports are > 1023)
+# This is just about the simplest possible protocol
+class Echo(LineReceiver):
+    def connectionMade(self):
+        self.factory.clients.append(self)
 
-MapGen = MapGenerator(it_config.map_width, it_config.map_height)
-gendmap = MapGen.generate_map(it_config.max_rooms, it_config.room_min_size, it_config.room_max_size, it_config.map_width, it_config.map_height)
-map = {
-    "COMMAND"   :   "MAPDATA",
-    "WIDTH"     :   gendmap.width,
-    "HEIGHT"    :   gendmap.height,
-    "TILES"     :   gendmap.tiles.__dict__,
-    "PLAYERX"   :   gendmap.playerX,
-    "PLAYERY"   :   gendmap.playerY
-    }
+    def connectionLost(self, reason):
+        self.factory.clients.remove(self)
 
-async def echo_server(reader, writer):
-    while True:
-        data = await reader.read(100)  # Max number of bytes to read
-        if not data:
-            break
-    writer.write(json.dumps(map).encode())
-    await writer.drain()  # Flow control, see later
-    writer.close()
+    def lineReceived(self, data):
+        command = json.loads(data)
+        print("Received command: " + str(command))
+        if command.get("COMMAND") == "MAPGEN":
+            MapGen = MapGenerator(it_config.map_width, it_config.map_height)
+            map = MapGen.generate_map(it_config.max_rooms, it_config.room_min_size, it_config.room_max_size, it_config.map_width, it_config.map_height)
+            print(map)
+            self.sendLine(json.dumps(map).encode())
 
-async def main(host, port):
-    server = await asyncio.start_server(echo_server, host, port)
-    await server.serve_forever()
-
-asyncio.run(main(HOST, PORT))
+PORT = 8080
+f = Factory()
+f.protocol = Echo
+f.clients = []
+reactor.listenTCP(PORT, f)
+reactor.run()
