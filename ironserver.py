@@ -1,31 +1,25 @@
 #!/usr/bin/env python3
-from twisted.internet.protocol import Protocol, Factory
-from twisted.internet import reactor
-from twisted.protocols.basic import LineReceiver
+
+import asyncio
 import json
+import socket
 from world.game_map import GameMap, MapGenerator
 import it_config
 
-# This is just about the simplest possible protocol
-class Echo(LineReceiver):
-    def connectionMade(self):
-        self.factory.clients.append(self)
+async def echo_server(reader, writer):
+    data = await reader.read(100)  # Max number of bytes to read
+    message = data.decode()
+    command = json.loads(message)
+    if command.get("COMMAND") == "MAPGEN":
+        MapGen = MapGenerator(it_config.map_width, it_config.map_height)
+        gendmap = MapGen.generate_map(command.get("TYPE"), command.get("LEVEL"), it_config.max_rooms, it_config.room_min_size, it_config.room_max_size)
+    writer.write(json.dumps(gendmap).encode())
+    await writer.drain()  # Flow control, see later
+    writer.close()
 
-    def connectionLost(self, reason):
-        self.factory.clients.remove(self)
+async def main(host, port):
+    server = await asyncio.start_server(echo_server, host, port)
+    async with server:
+        await server.serve_forever()
 
-    def lineReceived(self, data):
-        command = json.loads(data)
-        print("Received command: " + str(command))
-        if command.get("COMMAND") == "MAPGEN":
-            MapGen = MapGenerator(it_config.map_width, it_config.map_height)
-            map = MapGen.generate_map(it_config.max_rooms, it_config.room_min_size, it_config.room_max_size, it_config.map_width, it_config.map_height)
-            print(map)
-            self.sendLine(json.dumps(map).encode())
-
-PORT = 8080
-f = Factory()
-f.protocol = Echo
-f.clients = []
-reactor.listenTCP(PORT, f)
-reactor.run()
+asyncio.run(main(it_config.ironserver_host, it_config.ironserver_port))

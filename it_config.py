@@ -22,3 +22,6 @@ colors = {
     'light_wall': libtcod.Color(130, 110, 50),
     'light_ground': libtcod.Color(200, 180, 50)
 }
+
+ironserver_host = '127.0.0.1'  # The server's hostname or IP address
+ironserver_port = 8080        # The port used by the server

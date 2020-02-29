@@ -4,13 +4,13 @@ from world.rectangle import Rect
 from world.tile import Tile
 
 class GameMap:
-    def __init__(self, width, height, tiles, playerX, playerY):
+    def __init__(self, width, height, type, tiles, playerX, playerY):
         self.width = width
         self.height = height
+        self.type = type
         self.tiles = tiles
         self.playerX = playerX
         self.playerY = playerY
-
 
 
 class MapGenerator:
@@ -18,32 +18,81 @@ class MapGenerator:
         print("Instancing new Map Generator")
         self.width = width
         self.height = height
+        self.type = ""
         self.tiles = self.initialize_tiles()
+        self.playerStartX = int(self.width / 2)
+        self.playerStartY = int(self.height / 2)
 
     def initialize_tiles(self):
         tiles = [[Tile(True) for y in range(self.height)] for x in range(self.width)]
         return tiles
 
-    def generate_map(self, max_rooms, room_min_size, room_max_size, map_width, map_height):
+    def generate_map(self, type, level, max_rooms, room_min_size, room_max_size):
+        self.type = type
+        if type == "DUNGEON":
+            return self.gen_dungeon(max_rooms, room_min_size, room_max_size)
+        elif type == "TOWN":
+            return self.gen_town()
+
+    def gen_town(self):
+
+        #Move PC up a bit to the park
+        self.playerStartY = self.playerStartY - 10
+        self.playerStartX = self.playerStartX + 30
+
+        self.tiles = [[Tile(False) for y in range(self.height)] for x in range(self.width)]
+        for x in range(self.width):
+            self.tiles[x][0] = Tile(True)
+            self.tiles[x][self.height - 1] = Tile(True)
+        for y in range(self.height):
+            self.tiles[0][y] = Tile(True)
+            self.tiles[self.width - 1][y] = Tile(True)
+
+        rooms = []
+        new_room = Rect(3, 3, 10, 10)
+        self.create_building(new_room, "bottom")
+        rooms.append(new_room)
+        new_room = Rect(3, 17, 6, 9)
+        self.create_building(new_room, "top")
+        rooms.append(new_room)
+        new_room = Rect(16, 5, 12, 8)
+        self.create_building(new_room, "bottom")
+        rooms.append(new_room)
+        new_room = Rect(12, 17, 8, 14)
+        self.create_building(new_room, "top")
+        rooms.append(new_room)
+
+        new_room = Rect(40, 10, 10, 10)
+        self.create_building(new_room, "left")
+        rooms.append(new_room)
+        new_room = Rect(30, 20, 30, 20)
+        self.create_building(new_room, "top")
+        rooms.append(new_room)
+
+
+        map = self.encode_map()
+        return map
+
+    def gen_dungeon(self, max_rooms, room_min_size, room_max_size):
         print("Generating Map")
-        playerStartX = int(it_config.map_width / 2)
-        playerStartY = int(it_config.map_height / 2),
 
         rooms = []
         num_rooms = 0
 
         for r in range(max_rooms):
+            print("Attempting to generate room: " + str(r))
             # random width and height
             w = randint(room_min_size, room_max_size)
             h = randint(room_min_size, room_max_size)
             # random position without going out of the boundaries of the map
-            x = randint(0, map_width - w - 1)
-            y = randint(0, map_height - h - 1)
+            x = randint(0, self.width - w - 1)
+            y = randint(0, self.height - h - 1)
 
             # "Rect" class makes rectangles easier to work with
             new_room = Rect(x, y, w, h)
 
             # run through the other rooms and see if they intersect with this one
+            print("Checking for intersections")
             for other_room in rooms:
                 if new_room.intersect(other_room):
                     break
@@ -51,6 +100,7 @@ class MapGenerator:
                 # this means there are no intersections, so this room is valid
 
                 # "paint" it to the map's tiles
+                print("Creating Room")
                 self.create_room(new_room)
 
                 # center coordinates of new room, will be useful later
@@ -80,28 +130,28 @@ class MapGenerator:
                         # finally, append the new room to the list
                 rooms.append(new_room)
                 num_rooms += 1
-                map = self.encode_map(playerStartX, playerStartY)
-                return map
 
-    def encode_map(self, playerStartX, playerStartY):
+        map = self.encode_map()
+        return map
 
-        tile_list = []
-        for y in range(self.height):
-            for x in range(self.width):
-                print("Parsing: " + str(y) + "/" + str(x))
-                if self.tiles[x][y].blocked:
-                    tile_list.append(0)
-                else:
-                    tile_list.append(1)
-
+    def encode_map(self):
         map = {
             "COMMAND"   :   "MAPDATA",
             "WIDTH"     :   self.width,
             "HEIGHT"    :   self.height,
-            "TILES"     :   tile_list,
-            "PLAYERX"   :   playerStartX,
-            "PLAYERY"   :   playerStartY
+            "TYPE"      :   self.type,
+            "PLAYERX"   :   self.playerStartX,
+            "PLAYERY"   :   self.playerStartY
             }
+
+        for x in range(self.width):
+            map['TR_' + str(x)] = []
+            for y in range(self.height):
+                if self.tiles[x][y].blocked:
+                    map['TR_' + str(x)].append(0)
+                else:
+                    map['TR_' + str(x)].append(1)
+
         return map
 
     def create_room(self, room):
@@ -110,6 +160,33 @@ class MapGenerator:
             for y in range(room.y1 + 1, room.y2):
                 self.tiles[x][y].blocked = False
                 self.tiles[x][y].block_sight = False
+
+    def create_building(self, room, door_dir):
+        print(str(room.x1) + str(room.x2) + str(room.y1) +  str(room.y2))
+        #Walls
+        for x in range(room.x1, room.x2 + 1):
+            self.tiles[x][room.y1].blocked = True
+            self.tiles[x][room.y1].block_sight = True
+            self.tiles[x][room.y2].blocked = True
+            self.tiles[x][room.y2].block_sight = True
+        for y in range(room.y1, room.y2):
+            self.tiles[room.x1][y].blocked = True
+            self.tiles[room.x1][y].block_sight = True
+            self.tiles[room.x2][y].blocked = True
+            self.tiles[room.x2][y].block_sight = True
+        #Door
+        if door_dir == "bottom":
+            self.tiles[room.x1 + int((room.x2 - room.x1) / 2)][room.y2].blocked = False
+            self.tiles[room.x1 + int((room.x2 - room.x1) / 2)][room.y2].block_sight = False
+        if door_dir == "top":
+            self.tiles[room.x1 + int((room.x2 - room.x1) / 2)][room.y1].blocked = False
+            self.tiles[room.x1 + int((room.x2 - room.x1) / 2)][room.y1].block_sight = False
+        if door_dir == "left":
+            self.tiles[room.x1][room.y1 + int((room.y2 - room.y1) / 2)].blocked = False
+            self.tiles[room.x1][room.y1 + int((room.y2 - room.y1) / 2)].block_sight = False
+        if door_dir == "right":
+            self.tiles[room.x2][room.y1 + int((room.y2 - room.y1) / 2)].blocked = False
+            self.tiles[room.x2][room.y1 + int((room.y2 - room.y1) / 2)].block_sight = False
 
     def create_h_tunnel(self, x1, x2, y):
         for x in range(min(x1, x2), max(x1, x2) + 1):
