@@ -5,7 +5,7 @@ screen_height = 50
 
 # Size of the map
 map_width = 80
-map_height = 45
+map_height = 43
 
 # Some variables for the rooms in the map
 room_max_size = 10

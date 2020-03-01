@@ -189,13 +189,13 @@ class MapGenerator:
                             "X"             :       x,
                             "Y"             :       y,
                             "CHAR"          :       "G",
-                            "COLOR"         :       libtcod.yellow,
+                            "COLOR"         :       libtcod.green,
                             "NAME"          :       "Goblin",
                             "BLOCKS"        :       True,
                             "FIGHTER"       :       True,
                             "FIGHTER_HP"    :       2,
                             "FIGHTER_DEF"   :       0,
-                            "FIGHTER_POWER" :       1,
+                            "FIGHTER_ATK" :       1,
                             "AI"            :       True,
                             "AI_PACKAGE"    :       "Chase"
                             }
