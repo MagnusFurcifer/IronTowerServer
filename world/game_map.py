@@ -2,6 +2,8 @@ from random import randint
 import it_config
 from world.rectangle import Rect
 from world.tile import Tile
+import libtcodpy as libtcod
+
 
 class GameMap:
     def __init__(self, width, height, type, tiles, playerX, playerY):
@@ -20,6 +22,7 @@ class MapGenerator:
         self.height = height
         self.type = ""
         self.tiles = self.initialize_tiles()
+        self.entities = []
         self.playerStartX = int(self.width / 2)
         self.playerStartY = int(self.height / 2)
 
@@ -52,6 +55,17 @@ class MapGenerator:
         new_room = Rect(3, 3, 10, 10)
         self.create_building(new_room, "bottom")
         rooms.append(new_room)
+        tmp_entity = {
+            "X"         :       7,
+            "Y"         :       5,
+            "CHAR"      :       "@",
+            "COLOR"     :       libtcod.yellow,
+            "NAME"      :       "ShopKeeper",
+            "BLOCKS"    :       True,
+            "FIGHTER"   :       False,
+            "STAIRS"    :       False
+        }
+        self.entities.append(tmp_entity)
         new_room = Rect(3, 17, 6, 9)
         self.create_building(new_room, "top")
         rooms.append(new_room)
@@ -69,13 +83,25 @@ class MapGenerator:
         self.create_building(new_room, "top")
         rooms.append(new_room)
 
-
+        stairs_entity = {
+            "X"             :       45,
+            "Y"             :       30,
+            "CHAR"          :       ">",
+            "COLOR"         :       libtcod.white,
+            "NAME"          :       "Stairs",
+            "BLOCKS"        :       False,
+            "STAIRS"        :       True,
+            "STAIRS_TYPE"   :       "DUNGEON",
+            "STAIRS_LEVEL"  :       "1"
+            }
+        self.entities.append(stairs_entity)
         map = self.encode_map()
         return map
 
     def gen_dungeon(self, max_rooms, room_min_size, room_max_size):
         print("Generating Map")
 
+        max_monsters_per_room = 3
         rooms = []
         num_rooms = 0
 
@@ -105,11 +131,13 @@ class MapGenerator:
 
                 # center coordinates of new room, will be useful later
                 (new_x, new_y) = new_room.center()
+                center_last_room_x = new_x
+                center_last_room_y = new_y
 
                 if num_rooms == 0:
                     # this is the first room, where the player starts at
-                    playerStartX = new_x
-                    playerStartY = new_y
+                    self.playerStartX = new_x
+                    self.playerStartY = new_y
                 else:
                     # all rooms after the first:
                     # connect it to the previous room with a tunnel
@@ -128,11 +156,50 @@ class MapGenerator:
                         self.create_h_tunnel(prev_x, new_x, new_y)
 
                         # finally, append the new room to the list
+                self.place_monsters(new_room, max_monsters_per_room)
                 rooms.append(new_room)
                 num_rooms += 1
 
+        stairs_entity = {
+            "X"             :       center_last_room_x,
+            "Y"             :       center_last_room_y,
+            "CHAR"          :       ">",
+            "COLOR"         :       libtcod.white,
+            "NAME"          :       "Stairs",
+            "BLOCKS"        :       False,
+            "STAIRS"        :       True,
+            "STAIRS_TYPE"   :       "DUNGEON",
+            "STAIRS_LEVEL"  :       "2"
+            }
+        self.entities.append(stairs_entity)
         map = self.encode_map()
         return map
+
+    def place_monsters(self, room, max_monsters_per_room):
+        # Get a random number of monsters
+        number_of_monsters = randint(0, max_monsters_per_room)
+
+        for i in range(number_of_monsters):
+            # Choose a random location in the room
+            x = randint(room.x1 + 1, room.x2 - 1)
+            y = randint(room.y1 + 1, room.y2 - 1)
+
+            if not any([entity for entity in self.entities if entity.get("X") == x and entity.get("Y") == y]):
+                tmp_entity = {
+                            "X"             :       x,
+                            "Y"             :       y,
+                            "CHAR"          :       "G",
+                            "COLOR"         :       libtcod.yellow,
+                            "NAME"          :       "Goblin",
+                            "BLOCKS"        :       True,
+                            "FIGHTER"       :       True,
+                            "FIGHTER_HP"    :       2,
+                            "FIGHTER_DEF"   :       0,
+                            "FIGHTER_POWER" :       1,
+                            "AI"            :       True,
+                            "AI_PACKAGE"    :       "Chase"
+                            }
+                self.entities.append(tmp_entity)
 
     def encode_map(self):
         map = {
@@ -140,6 +207,7 @@ class MapGenerator:
             "WIDTH"     :   self.width,
             "HEIGHT"    :   self.height,
             "TYPE"      :   self.type,
+            "ENTITIES"  :   self.entities,
             "PLAYERX"   :   self.playerStartX,
             "PLAYERY"   :   self.playerStartY
             }
