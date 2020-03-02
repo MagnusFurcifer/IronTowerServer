@@ -245,7 +245,7 @@ class MapGenerator:
         for i in range(max_kit):
             x = randint(room.x1 + 1, room.x2 - 1)
             y = randint(room.y1 + 1, room.y2 - 1)
-            if not any([entity for entity in self.entities if entity.x == x and entity.y == y]):
+            if not any([entity for entity in self.entities if entity.get("X") == x and entity.get("Y") == y]):
                 tmp_entity = {
                     "X"                 :       x,
                     "Y"                 :       y,
