@@ -69,36 +69,70 @@ class MapGenerator:
         tmp_entity = {
             "X"                 :       7,
             "Y"                 :       8,
-            "CHAR"              :       "s",
+            "CHAR"              :       "r",
             "COLOR"             :       libtcod.white,
-            "NAME"              :       "Short Sword +1",
+            "NAME"              :       "Plain Ring",
             "BLOCKS"            :       False,
             "FIGHTER"           :       False,
             "STAIRS"            :       False,
             "EQUIPMENT"         :       True,
-            "EQ_TYPE"           :       1, #weapon
-            "EQ_STAT"           :       "ATTACK",
-            "EQ_STAT_CHANGE"    :       1,
-            "DESCRIPTION"       :       "A normal ass short sword? What do you want?"
+            "EQ_TYPE"           :       2, #weapon
+            "EQ_STAT"           :       "HP",
+            "EQ_STAT_CHANGE"    :       0,
+            "DESCRIPTION"       :       "A normal ring"
 
         }
         self.entities.append(tmp_entity)
         tmp_entity = {
-                    "X"                 :       9,
+                    "X"                 :       8,
                     "Y"                 :       8,
                     "CHAR"              :       "s",
                     "COLOR"             :       libtcod.white,
-                    "NAME"              :       "Short Sword +2",
+                    "NAME"              :       "Plain Sword",
                     "BLOCKS"            :       False,
                     "FIGHTER"           :       False,
                     "STAIRS"            :       False,
                     "EQUIPMENT"         :       True,
-                    "EQ_TYPE"           :       1, #weapon
+                    "EQ_TYPE"           :       0, #weapon
                     "EQ_STAT"           :       "ATTACK",
                     "EQ_STAT_CHANGE"    :       2,
-                    "DESCRIPTION"       :       "A slightly less shit sword lol"
+                    "DESCRIPTION"       :       "A normal sword"
 
                 }
+        self.entities.append(tmp_entity)
+        tmp_entity = {
+                "X"                 :       9,
+                "Y"                 :       8,
+                "CHAR"              :       "n",
+                "COLOR"             :       libtcod.white,
+                "NAME"              :       "Plain Amulet",
+                "BLOCKS"            :       False,
+                "FIGHTER"           :       False,
+                "STAIRS"            :       False,
+                "EQUIPMENT"         :       True,
+                "EQ_TYPE"           :       0, #weapon
+                "EQ_STAT"           :       "HP",
+                "EQ_STAT_CHANGE"    :       0,
+                "DESCRIPTION"       :       "A normal amulet"
+
+            }
+        self.entities.append(tmp_entity)
+        tmp_entity = {
+                "X"                 :       10,
+                "Y"                 :       8,
+                "CHAR"              :       "a",
+                "COLOR"             :       libtcod.white,
+                "NAME"              :       "Plain Leather Cuirass",
+                "BLOCKS"            :       False,
+                "FIGHTER"           :       False,
+                "STAIRS"            :       False,
+                "EQUIPMENT"         :       True,
+                "EQ_TYPE"           :       0, #weapon
+                "EQ_STAT"           :       "DEFENSE",
+                "EQ_STAT_CHANGE"    :       0,
+                "DESCRIPTION"       :       "A normal leather armor peice"
+
+            }
         self.entities.append(tmp_entity)
         new_room = Rect(3, 17, 6, 9)
         self.create_building(new_room, "top")
@@ -187,6 +221,7 @@ class MapGenerator:
 
                         # finally, append the new room to the list
                 self.place_monsters(new_room, max_monsters_per_room)
+                self.place_equipment(new_room, 1) #Place items
                 rooms.append(new_room)
                 num_rooms += 1
 
@@ -204,6 +239,33 @@ class MapGenerator:
         self.entities.append(stairs_entity)
         map = self.encode_map()
         return map
+
+
+    def place_equipment(self, room, max_kit):
+        for i in range(max_kit):
+            x = randint(room.x1 + 1, room.x2 - 1)
+            y = randint(room.y1 + 1, room.y2 - 1)
+
+            if not any([entity for entity in entities if entity.x == x and entity.y == y]):
+                item = Entity(x, y, '!', libtcod.violet, 'Healing Potion', render_order=RenderOrder.ITEM)
+
+                tmp_entity = {
+                    "X"                 :       x,
+                    "Y"                 :       y,
+                    "CHAR"              :       "s",
+                    "COLOR"             :       libtcod.white,
+                    "NAME"              :       "Plain Sword",
+                    "BLOCKS"            :       False,
+                    "FIGHTER"           :       False,
+                    "STAIRS"            :       False,
+                    "EQUIPMENT"         :       True,
+                    "EQ_TYPE"           :       1, #weapon
+                    "EQ_STAT"           :       "ATTACK",
+                    "EQ_STAT_CHANGE"    :       0,
+                    "DESCRIPTION"       :       "A normal Sword"
+
+                }
+                self.entities.append(tmp_entity)
 
     def place_monsters(self, room, max_monsters_per_room):
         # Get a random number of monsters
