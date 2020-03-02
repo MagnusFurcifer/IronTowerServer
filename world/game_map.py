@@ -2,6 +2,7 @@ from random import randint
 import it_config
 from world.rectangle import Rect
 from world.tile import Tile
+from world.enums import EquipmentType
 import libtcodpy as libtcod
 
 
@@ -63,6 +64,23 @@ class MapGenerator:
             "BLOCKS"    :       True,
             "FIGHTER"   :       False,
             "STAIRS"    :       False
+        }
+        self.entities.append(tmp_entity)
+        tmp_entity = {
+            "X"                 :       7,
+            "Y"                 :       8,
+            "CHAR"              :       "r",
+            "COLOR"             :       libtcod.white,
+            "NAME"              :       "Short Sword +1",
+            "BLOCKS"            :       False,
+            "FIGHTER"           :       False,
+            "STAIRS"            :       False,
+            "EQUIPMENT"         :       True,
+            "EQ_TYPE"           :       EquipmentType.WEAPON,
+            "EQ_STAT"           :       "Attack",
+            "EQ_STAT_CHANGE"    :       "1",
+            "DESCRIPTION"       :       "A normal ass short sword? What do you want?"
+
         }
         self.entities.append(tmp_entity)
         new_room = Rect(3, 17, 6, 9)
