@@ -17,7 +17,6 @@ class GameMap:
 
 class MapGenerator:
     def __init__(self, width, height):
-        #print("Instancing new Map Generator")
         self.width = width
         self.height = height
         self.type = ""
@@ -99,14 +98,12 @@ class MapGenerator:
         return map
 
     def gen_dungeon(self, max_rooms, room_min_size, room_max_size):
-        #print("Generating Map")
 
         max_monsters_per_room = 3
         rooms = []
         num_rooms = 0
 
         for r in range(max_rooms):
-            #print("Attempting to generate room: " + str(r))
             # random width and height
             w = randint(room_min_size, room_max_size)
             h = randint(room_min_size, room_max_size)
@@ -118,7 +115,6 @@ class MapGenerator:
             new_room = Rect(x, y, w, h)
 
             # run through the other rooms and see if they intersect with this one
-            #print("Checking for intersections")
             for other_room in rooms:
                 if new_room.intersect(other_room):
                     break
@@ -126,7 +122,6 @@ class MapGenerator:
                 # this means there are no intersections, so this room is valid
 
                 # "paint" it to the map's tiles
-                #print("Creating Room")
                 self.create_room(new_room)
 
                 # center coordinates of new room, will be useful later
@@ -230,7 +225,6 @@ class MapGenerator:
                 self.tiles[x][y].block_sight = False
 
     def create_building(self, room, door_dir):
-        print(str(room.x1) + str(room.x2) + str(room.y1) +  str(room.y2))
         #Walls
         for x in range(room.x1, room.x2 + 1):
             self.tiles[x][room.y1].blocked = True
