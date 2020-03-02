@@ -69,7 +69,7 @@ class MapGenerator:
         tmp_entity = {
             "X"                 :       7,
             "Y"                 :       8,
-            "CHAR"              :       "r",
+            "CHAR"              :       "s",
             "COLOR"             :       libtcod.white,
             "NAME"              :       "Short Sword +1",
             "BLOCKS"            :       False,
@@ -83,6 +83,23 @@ class MapGenerator:
 
         }
         self.entities.append(tmp_entity)
+                tmp_entity = {
+                    "X"                 :       9,
+                    "Y"                 :       8,
+                    "CHAR"              :       "s",
+                    "COLOR"             :       libtcod.white,
+                    "NAME"              :       "Short Sword +2",
+                    "BLOCKS"            :       False,
+                    "FIGHTER"           :       False,
+                    "STAIRS"            :       False,
+                    "EQUIPMENT"         :       True,
+                    "EQ_TYPE"           :       1, #weapon
+                    "EQ_STAT"           :       "ATTACK",
+                    "EQ_STAT_CHANGE"    :       2,
+                    "DESCRIPTION"       :       "A slightly less shit sword lol"
+
+                }
+                self.entities.append(tmp_entity)
         new_room = Rect(3, 17, 6, 9)
         self.create_building(new_room, "top")
         rooms.append(new_room)
