@@ -93,9 +93,9 @@ class MapGenerator:
                     "FIGHTER"           :       False,
                     "STAIRS"            :       False,
                     "EQUIPMENT"         :       True,
-                    "EQ_TYPE"           :       0, #weapon
+                    "EQ_TYPE"           :       1, #weapon
                     "EQ_STAT"           :       "ATTACK",
-                    "EQ_STAT_CHANGE"    :       2,
+                    "EQ_STAT_CHANGE"    :       0,
                     "DESCRIPTION"       :       "A normal sword"
 
                 }
@@ -110,7 +110,7 @@ class MapGenerator:
                 "FIGHTER"           :       False,
                 "STAIRS"            :       False,
                 "EQUIPMENT"         :       True,
-                "EQ_TYPE"           :       0, #weapon
+                "EQ_TYPE"           :       3, #weapon
                 "EQ_STAT"           :       "HP",
                 "EQ_STAT_CHANGE"    :       0,
                 "DESCRIPTION"       :       "A normal amulet"
@@ -127,7 +127,7 @@ class MapGenerator:
                 "FIGHTER"           :       False,
                 "STAIRS"            :       False,
                 "EQUIPMENT"         :       True,
-                "EQ_TYPE"           :       0, #weapon
+                "EQ_TYPE"           :       4, #weapon
                 "EQ_STAT"           :       "DEFENSE",
                 "EQ_STAT_CHANGE"    :       0,
                 "DESCRIPTION"       :       "A normal leather armor peice"
@@ -245,10 +245,7 @@ class MapGenerator:
         for i in range(max_kit):
             x = randint(room.x1 + 1, room.x2 - 1)
             y = randint(room.y1 + 1, room.y2 - 1)
-
             if not any([entity for entity in entities if entity.x == x and entity.y == y]):
-                item = Entity(x, y, '!', libtcod.violet, 'Healing Potion', render_order=RenderOrder.ITEM)
-
                 tmp_entity = {
                     "X"                 :       x,
                     "Y"                 :       y,
