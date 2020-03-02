@@ -76,7 +76,7 @@ class MapGenerator:
             "FIGHTER"           :       False,
             "STAIRS"            :       False,
             "EQUIPMENT"         :       True,
-            "EQ_TYPE"           :       EquipmentType.WEAPON,
+            "EQ_TYPE"           :       int(EquipmentType.WEAPON),
             "EQ_STAT"           :       "Attack",
             "EQ_STAT_CHANGE"    :       "1",
             "DESCRIPTION"       :       "A normal ass short sword? What do you want?"
