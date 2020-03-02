@@ -78,7 +78,7 @@ class MapGenerator:
             "EQUIPMENT"         :       True,
             "EQ_TYPE"           :       1, #weapon
             "EQ_STAT"           :       "ATTACK",
-            "EQ_STAT_CHANGE"    :       "1",
+            "EQ_STAT_CHANGE"    :       1,
             "DESCRIPTION"       :       "A normal ass short sword? What do you want?"
 
         }
