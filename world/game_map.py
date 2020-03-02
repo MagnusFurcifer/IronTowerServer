@@ -83,7 +83,7 @@ class MapGenerator:
 
         }
         self.entities.append(tmp_entity)
-                tmp_entity = {
+        tmp_entity = {
                     "X"                 :       9,
                     "Y"                 :       8,
                     "CHAR"              :       "s",
@@ -99,7 +99,7 @@ class MapGenerator:
                     "DESCRIPTION"       :       "A slightly less shit sword lol"
 
                 }
-                self.entities.append(tmp_entity)
+        self.entities.append(tmp_entity)
         new_room = Rect(3, 17, 6, 9)
         self.create_building(new_room, "top")
         rooms.append(new_room)
