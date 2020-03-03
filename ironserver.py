@@ -17,8 +17,8 @@ async def echo_server(reader, writer):
     addr = writer.get_extra_info('peername')
     print("Connection from: " + str(addr) + " - Command: " + str(command))
     if command.get("COMMAND") == "MAPGEN":
-        MapGen = MapGenerator(it_config.map_width, it_config.map_height)
-        gendmap = MapGen.generate_map(command.get("TYPE"), command.get("LEVEL"), it_config.max_rooms, it_config.room_min_size, it_config.room_max_size)
+        MapGen = MapGenerator(it_config.map_width, it_config.map_height, command.get("TYPE"), command.get("LEVEL"))
+        gendmap = MapGen.generate_map(it_config.max_rooms, it_config.room_min_size, it_config.room_max_size)
     writer.write(json.dumps(gendmap).encode())
     await writer.drain()  # Flow control, see later
     writer.close()

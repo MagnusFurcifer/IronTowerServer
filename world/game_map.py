@@ -4,6 +4,7 @@ from world.rectangle import Rect
 from world.tile import Tile
 from world.enums import EquipmentType
 import libtcodpy as libtcod
+from world.monster_generator import MonsterGenerator
 
 
 class GameMap:
@@ -17,10 +18,11 @@ class GameMap:
 
 
 class MapGenerator:
-    def __init__(self, width, height):
+    def __init__(self, width, height, type, level):
         self.width = width
         self.height = height
-        self.type = ""
+        self.type = type
+        self.level = level
         self.tiles = self.initialize_tiles()
         self.entities = []
         self.playerStartX = int(self.width / 2)
@@ -30,11 +32,10 @@ class MapGenerator:
         tiles = [[Tile(True) for y in range(self.height)] for x in range(self.width)]
         return tiles
 
-    def generate_map(self, type, level, max_rooms, room_min_size, room_max_size):
-        self.type = type
-        if type == "DUNGEON":
+    def generate_map(self, max_rooms, room_min_size, room_max_size):
+        if self.type == "DUNGEON":
             return self.gen_dungeon(max_rooms, room_min_size, room_max_size)
-        elif type == "TOWN":
+        elif self.type == "TOWN":
             return self.gen_town()
 
     def gen_town(self):
@@ -268,27 +269,15 @@ class MapGenerator:
         # Get a random number of monsters
         number_of_monsters = randint(0, max_monsters_per_room)
 
+        mongen = MonsterGenerator(self.type, self.level)
+
         for i in range(number_of_monsters):
             # Choose a random location in the room
             x = randint(room.x1 + 1, room.x2 - 1)
             y = randint(room.y1 + 1, room.y2 - 1)
 
             if not any([entity for entity in self.entities if entity.get("X") == x and entity.get("Y") == y]):
-                tmp_entity = {
-                            "X"             :       x,
-                            "Y"             :       y,
-                            "CHAR"          :       "G",
-                            "COLOR"         :       libtcod.green,
-                            "NAME"          :       "Goblin",
-                            "BLOCKS"        :       True,
-                            "FIGHTER"       :       True,
-                            "FIGHTER_HP"    :       2,
-                            "FIGHTER_DEF"   :       0,
-                            "FIGHTER_ATK" :       1,
-                            "AI"            :       True,
-                            "AI_PACKAGE"    :       "Chase"
-                            }
-                self.entities.append(tmp_entity)
+                self.entities.append(get_monster(x, y))
 
     def encode_map(self):
         map = {
