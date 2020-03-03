@@ -45,11 +45,11 @@ class EquipmentFactory:
                     "DESCRIPTION"       :       "A normal Sword"
                     }
 
-        kit_adj = [blessed, shiny, dark, dirty, golden, smelly, steel, iron, wooden, glass, metal, slimey]
-        kit_wp_noun = [sword, axe, mace, staff, dagger]
-        kit_rn_noun = [ring, band]
-        kit_am_noun = [amulet, necklace, chain, choker, pendant, locket]
-        kit_ar_noun = [cuirass, plate armor, chainmail, leathers]
+        kit_adj = ['blessed', 'shiny', 'dark', 'dirty', 'golden', 'smelly', 'steel', 'iron', 'wooden', 'glass', 'metal', 'slimey']
+        kit_wp_noun = ['sword', 'axe', 'mace', 'staff', 'dagger']
+        kit_rn_noun = ['ring', 'band']
+        kit_am_noun = ['amulet', 'necklace', 'chain', 'choker', 'pendant', 'locket']
+        kit_ar_noun = ['cuirass', 'plate armor', 'chainmail', 'leathers']
         kit_stats = ["ATTACK", "HP", "DEFENSE"]
         kit_types = [1, 2, 3, 4] #Sword, Ring, Amulet, Armor
         kit_type = random.choice(kit_types)
