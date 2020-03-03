@@ -100,5 +100,5 @@ class EquipmentFactory:
             tmp_entity["DESCRIPTION"] = "A Peice of Armor"
 
         equipment_name = equipment_name + " of " + tmp_entity["EQ_STAT"].lower()
-
+        tmp_entity['NAME'] = equipment_name
         return tmp_entity
