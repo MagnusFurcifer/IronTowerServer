@@ -6,7 +6,7 @@ class NPCFactory:
         self.type = type
         self.level = level
 
-    def get_monster(x, y):
+    def get_monster(self, x, y):
         tmp_entity = {
                     "X"             :       x,
                     "Y"             :       y,
@@ -29,7 +29,7 @@ class MonsterFactory:
         self.type = type
         self.level = level
 
-    def get_monster(x, y):
+    def get_monster(self, x, y):
         tmp_entity = {
                     "X"             :       x,
                     "Y"             :       y,
@@ -51,7 +51,7 @@ class EquipmentFactory:
         self.type = type
         self.level = level
 
-    def get_random_equipment(x, y):
+    def get_random_equipment(self, x, y):
         tmp_entity = {
                     "X"                 :       x,
                     "Y"                 :       y,
