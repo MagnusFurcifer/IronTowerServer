@@ -175,11 +175,11 @@ class MapGenerator:
 
         for r in range(max_rooms):
             # random width and height
-            w = randint(room_min_size, room_max_size)
-            h = randint(room_min_size, room_max_size)
+            w = random.randint(room_min_size, room_max_size)
+            h = random.randint(room_min_size, room_max_size)
             # random position without going out of the boundaries of the map
-            x = randint(0, self.width - w - 1)
-            y = randint(0, self.height - h - 1)
+            x = random.randint(0, self.width - w - 1)
+            y = random.randint(0, self.height - h - 1)
 
             # "Rect" class makes rectangles easier to work with
             new_room = Rect(x, y, w, h)
@@ -211,7 +211,7 @@ class MapGenerator:
                     (prev_x, prev_y) = rooms[num_rooms - 1].center()
 
                     # flip a coin (random number that is either 0 or 1)
-                    if randint(0, 1) == 1:
+                    if random.randint(0, 1) == 1:
                         # first move horizontally, then vertically
                         self.create_h_tunnel(prev_x, new_x, prev_y)
                         self.create_v_tunnel(prev_y, new_y, new_x)
@@ -247,21 +247,21 @@ class MapGenerator:
         equipgen = EquipmentFactory(self.type, type.level)
 
         for i in range(max_kit):
-            x = randint(room.x1 + 1, room.x2 - 1)
-            y = randint(room.y1 + 1, room.y2 - 1)
+            x = random.randint(room.x1 + 1, room.x2 - 1)
+            y = random.randint(room.y1 + 1, room.y2 - 1)
             if not any([entity for entity in self.entities if entity.get("X") == x and entity.get("Y") == y]):
                 self.entities.append(equipgen.get_random_equipment(x, y))
 
     def place_monsters(self, room, max_monsters_per_room):
         # Get a random number of monsters
-        number_of_monsters = randint(0, max_monsters_per_room)
+        number_of_monsters = random.randint(0, max_monsters_per_room)
 
         mongen = MonsterFactory(self.type, self.level)
 
         for i in range(number_of_monsters):
             # Choose a random location in the room
-            x = randint(room.x1 + 1, room.x2 - 1)
-            y = randint(room.y1 + 1, room.y2 - 1)
+            x = random.randint(room.x1 + 1, room.x2 - 1)
+            y = random.randint(room.y1 + 1, room.y2 - 1)
 
             if not any([entity for entity in self.entities if entity.get("X") == x and entity.get("Y") == y]):
                 self.entities.append(mongen.get_monster(x, y))
