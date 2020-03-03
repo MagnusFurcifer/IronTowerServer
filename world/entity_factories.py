@@ -53,29 +53,29 @@ class EquipmentFactory:
         kit_stats = ["ATTACK", "HP", "DEFENSE"]
         kit_types = [1, 2, 3, 4] #Sword, Ring, Amulet, Armor
         kit_type = random.choice(kit_types)
-        tmp_entity.get("EQ_TYPE") = kit_type
+        tmp_entity["EQ_TYPE"]= kit_type
         equipment_name = random.choice(kit_adj) + " "
         if kit_type ==  1:
-            tmp_entity.get("EQ_STAT") = "ATTACK"
+            tmp_entity["EQ_STAT"] = "ATTACK"
             equipment_name = equipment_name + random.choice(kit_wp_noun)
-            tmp_entity.get("CHAR") = "w"
-            tmp_entity.get("DESCRIPTION") = "A Weapon"
+            tmp_entity["CHAR"] = "w"
+            tmp_entity["DESCRIPTION"] = "A Weapon"
         if kit_type ==  2:
-            tmp_entity.get("EQ_STAT") = random.choice(kit_stats)
+            tmp_entity["EQ_STAT"] = random.choice(kit_stats)
             equipment_name = equipment_name + random.choice(kit_rn_noun)
-            tmp_entity.get("CHAR") = "r"
-            tmp_entity.get("DESCRIPTION") = "A Ring"
+            tmp_entity["CHAR"] = "r"
+            tmp_entity["DESCRIPTION"] = "A Ring"
         if kit_type ==  3:
-            tmp_entity.get("EQ_STAT") = random.choice(kit_stats)
+            tmp_entity["EQ_STAT"] = random.choice(kit_stats)
             equipment_name = equipment_name + random.choice(kit_am_noun)
-            tmp_entity.get("CHAR") = "n"
-            tmp_entity.get("DESCRIPTION") = "A Amulet"
+            tmp_entity["CHAR"] = "n"
+            tmp_entity["DESCRIPTION"] = "A Amulet"
         if kit_type ==  4:
-            tmp_entity.get("EQ_STAT") = random.choice(kit_stats)
+            tmp_entity["EQ_STAT"] = random.choice(kit_stats)
             equipment_name = equipment_name + random.choice(kit_ar_noun)
-            tmp_entity.get("CHAR") = "a"
-            tmp_entity.get("DESCRIPTION") = "A Peice of Armor"
+            tmp_entity["CHAR"] = "a"
+            tmp_entity["DESCRIPTION"] = "A Peice of Armor"
 
-        equipment_name = equipment_name + " of " + tmp_entity.get("EQ_STAT").lower()
+        equipment_name = equipment_name + " of " + tmp_entity["EQ_STAT"].lower()
 
         return tmp_entity
