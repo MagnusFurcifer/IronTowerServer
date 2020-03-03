@@ -1,10 +1,10 @@
-from random import randint
+import random
 import it_config
 from world.rectangle import Rect
 from world.tile import Tile
 from world.enums import EquipmentType
 import libtcodpy as libtcod
-from world.monster_generator import MonsterGenerator
+from world.entity_factories import MonsterFactory, EquipmentFactory, NPCFactory
 
 
 class GameMap:
@@ -87,7 +87,7 @@ class MapGenerator:
         tmp_entity = {
                     "X"                 :       8,
                     "Y"                 :       8,
-                    "CHAR"              :       "s",
+                    "CHAR"              :       "w",
                     "COLOR"             :       libtcod.white,
                     "NAME"              :       "Plain Sword",
                     "BLOCKS"            :       False,
@@ -243,33 +243,20 @@ class MapGenerator:
 
 
     def place_equipment(self, room, max_kit):
+
+        equipgen = EquipmentFactory(self.type, type.level)
+
         for i in range(max_kit):
             x = randint(room.x1 + 1, room.x2 - 1)
             y = randint(room.y1 + 1, room.y2 - 1)
             if not any([entity for entity in self.entities if entity.get("X") == x and entity.get("Y") == y]):
-                tmp_entity = {
-                    "X"                 :       x,
-                    "Y"                 :       y,
-                    "CHAR"              :       "s",
-                    "COLOR"             :       libtcod.white,
-                    "NAME"              :       "Plain Sword",
-                    "BLOCKS"            :       False,
-                    "FIGHTER"           :       False,
-                    "STAIRS"            :       False,
-                    "EQUIPMENT"         :       True,
-                    "EQ_TYPE"           :       1, #weapon
-                    "EQ_STAT"           :       "ATTACK",
-                    "EQ_STAT_CHANGE"    :       0,
-                    "DESCRIPTION"       :       "A normal Sword"
-
-                }
-                self.entities.append(tmp_entity)
+                self.entities.append(equipgen.get_random_equipment(x, y))
 
     def place_monsters(self, room, max_monsters_per_room):
         # Get a random number of monsters
         number_of_monsters = randint(0, max_monsters_per_room)
 
-        mongen = MonsterGenerator(self.type, self.level)
+        mongen = MonsterFactory(self.type, self.level)
 
         for i in range(number_of_monsters):
             # Choose a random location in the room
@@ -277,7 +264,7 @@ class MapGenerator:
             y = randint(room.y1 + 1, room.y2 - 1)
 
             if not any([entity for entity in self.entities if entity.get("X") == x and entity.get("Y") == y]):
-                self.entities.append(get_monster(x, y))
+                self.entities.append(mongen.get_monster(x, y))
 
     def encode_map(self):
         map = {
