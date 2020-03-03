@@ -244,7 +244,7 @@ class MapGenerator:
 
     def place_equipment(self, room, max_kit):
 
-        equipgen = EquipmentFactory(self.type, type.level)
+        equipgen = EquipmentFactory(self.type, self.level)
 
         for i in range(max_kit):
             x = random.randint(room.x1 + 1, room.x2 - 1)
