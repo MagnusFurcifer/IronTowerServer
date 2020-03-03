@@ -235,7 +235,7 @@ class MapGenerator:
             "BLOCKS"        :       False,
             "STAIRS"        :       True,
             "STAIRS_TYPE"   :       "DUNGEON",
-            "STAIRS_LEVEL"  :       "2"
+            "STAIRS_LEVEL"  :       self.level + 1
             }
         self.entities.append(stairs_entity)
         map = self.encode_map()
