@@ -50,19 +50,19 @@ class MonsterFactory:
         mon_type = random.choice(monster_types)
         if mon_type == "GOB":
             print("Goblin")
-            tmp_entity["NAME"] == "Goblin"
-            tmp_entity["AI_PACKAGE"] == "Chase"
-            tmp_entity["CHAR"] == "G"
+            tmp_entity["NAME"] = "Goblin"
+            tmp_entity["AI_PACKAGE"] = "Chase"
+            tmp_entity["CHAR"] = "G"
         elif mon_type == "ZOM":
             print("Zom")
-            tmp_entity["NAME"] == "Zombie"
-            tmp_entity["AI_PACKAGE"] == "Bounce"
-            tmp_entity["CHAR"] == "Z"
+            tmp_entity["NAME"] = "Zombie"
+            tmp_entity["AI_PACKAGE"] = "Bounce"
+            tmp_entity["CHAR"] = "Z"
         elif mon_type == "MUSH":
             print("Mush")
-            tmp_entity["NAME"] == "Mushroom"
-            tmp_entity["AI_PACKAGE"] == "Static"
-            tmp_entity["CHAR"] == "M"
+            tmp_entity["NAME"] = "Mushroom"
+            tmp_entity["AI_PACKAGE"] = "Static"
+            tmp_entity["CHAR"] = "M"
         return tmp_entity
 
 class EquipmentFactory:
