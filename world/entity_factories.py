@@ -22,20 +22,8 @@ class NPCFactory:
                     "AI"            :       True,
                     "AI_PACKAGE"    :       "Chase"
                     }
-        mon_type = random.choice(monster_types)
-        if mon_type == "GOB":
-            tmp_entity["NAME"] == "Goblin"
-            tmp_entity["AI_PACKAGE"] == "Chase"
-            tmp_entity["CHAR"] == "G"
-        elif mon_type == "ZOM":
-            tmp_entity["NAME"] == "Zombie"
-            tmp_entity["AI_PACKAGE"] == "Bounce"
-            tmp_entity["CHAR"] == "Z"
-        elif mon_type == "MUSH":
-            tmp_entity["NAME"] == "Mushroom"
-            tmp_entity["AI_PACKAGE"] == "Static"
-            tmp_entity["CHAR"] == "M"
         return tmp_entity
+
 
 
 class MonsterFactory:
@@ -44,6 +32,7 @@ class MonsterFactory:
         self.level = level
 
     def get_monster(self, x, y):
+        monster_types = ["GOB", "ZOM", "MUSH"]
         tmp_entity = {
                     "X"             :       x,
                     "Y"             :       y,
@@ -58,6 +47,19 @@ class MonsterFactory:
                     "AI"            :       True,
                     "AI_PACKAGE"    :       "Chase"
                     }
+        mon_type = random.choice(monster_types)
+        if mon_type == "GOB":
+            tmp_entity["NAME"] == "Goblin"
+            tmp_entity["AI_PACKAGE"] == "Chase"
+            tmp_entity["CHAR"] == "G"
+        elif mon_type == "ZOM":
+            tmp_entity["NAME"] == "Zombie"
+            tmp_entity["AI_PACKAGE"] == "Bounce"
+            tmp_entity["CHAR"] == "Z"
+        elif mon_type == "MUSH":
+            tmp_entity["NAME"] == "Mushroom"
+            tmp_entity["AI_PACKAGE"] == "Static"
+            tmp_entity["CHAR"] == "M"
         return tmp_entity
 
 class EquipmentFactory:
