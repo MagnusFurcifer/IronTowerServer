@@ -199,7 +199,9 @@ class MapGenerator:
             y = random.randint(room.y1 + 1, room.y2 - 1)
 
             if not any([entity for entity in self.entities if entity.get("X") == x and entity.get("Y") == y]):
-                self.entities.append(mongen.get_monster(x, y))
+                manster = mongen.get_monster(x, y)
+                print(manster)
+                self.entities.append(manster)
 
     def encode_map(self):
         map = {
