@@ -100,6 +100,6 @@ class EquipmentFactory:
             tmp_entity["DESCRIPTION"] = "A Peice of Armor"
 
         tmp_entity["EQ_STAT_CHANGE"] = random.randint(0, self.level)
-        equipment_name = equipment_name + " of " + tmp_entity["EQ_STAT"].lower()
+        equipment_name = equipment_name + " of " + tmp_entity["EQ_STAT"].lower() + " + " + str(tmp_entity["EQ_STAT_CHANGE"])
         tmp_entity['NAME'] = equipment_name
         return tmp_entity
