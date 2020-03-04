@@ -1,6 +1,6 @@
 import libtcodpy as libtcod
 
-random_seed = "IRONTOWER""
+random_seed = "IRONTOWER"
 
 screen_width = 80
 screen_height = 50
