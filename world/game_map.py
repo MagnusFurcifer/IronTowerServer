@@ -5,7 +5,7 @@ from world.tile import Tile
 from world.enums import EquipmentType
 import libtcodpy as libtcod
 from world.entity_factories import MonsterFactory, EquipmentFactory, NPCFactory
-
+from world.static_factories import get_static_entity
 
 class GameMap:
     def __init__(self, width, height, type, tiles, playerX, playerY):
@@ -53,94 +53,26 @@ class MapGenerator:
             self.tiles[self.width - 1][y] = Tile(True)
 
         rooms = []
+
+        #Item Shop
         new_room = Rect(3, 3, 10, 10)
         self.create_building(new_room, "bottom")
         rooms.append(new_room)
+        self.entities.append(get_static_entity(1)) #Jeff the item man
+        self.entities.append(get_static_entity(2)) #Plan Ring
+        self.entities.append(get_static_entity(3)) #Plain Sword
+        self.entities.append(get_static_entity(4)) #Plan Amulet
+        self.entities.append(get_static_entity(5)) #Plain armor
 
-        tmp_entity = {
-            "X"             :       7,
-            "Y"             :       5,
-            "CHAR"          :       "@",
-            "COLOR"         :       libtcod.yellow,
-            "NAME"          :       "ShopKeeper",
-            "BLOCKS"        :       True,
-            "FIGHTER"       :       False,
-            "STAIRS"        :       False,
-            "DIALOG"        :       True,
-            "DIALOG_LINE"   :   "Please take these items."
-        }
-        self.entities.append(tmp_entity)
-        tmp_entity = {
-            "X"                 :       7,
-            "Y"                 :       8,
-            "CHAR"              :       "r",
-            "COLOR"             :       libtcod.white,
-            "NAME"              :       "Plain Ring",
-            "BLOCKS"            :       False,
-            "FIGHTER"           :       False,
-            "STAIRS"            :       False,
-            "EQUIPMENT"         :       True,
-            "EQ_TYPE"           :       2, #weapon
-            "EQ_STAT"           :       "HP",
-            "EQ_STAT_CHANGE"    :       0,
-            "DESCRIPTION"       :       "A normal ring"
-
-        }
-        self.entities.append(tmp_entity)
-        tmp_entity = {
-                    "X"                 :       8,
-                    "Y"                 :       8,
-                    "CHAR"              :       "w",
-                    "COLOR"             :       libtcod.white,
-                    "NAME"              :       "Plain Sword",
-                    "BLOCKS"            :       False,
-                    "FIGHTER"           :       False,
-                    "STAIRS"            :       False,
-                    "EQUIPMENT"         :       True,
-                    "EQ_TYPE"           :       1, #weapon
-                    "EQ_STAT"           :       "ATTACK",
-                    "EQ_STAT_CHANGE"    :       0,
-                    "DESCRIPTION"       :       "A normal sword"
-
-                }
-        self.entities.append(tmp_entity)
-        tmp_entity = {
-                "X"                 :       9,
-                "Y"                 :       8,
-                "CHAR"              :       "n",
-                "COLOR"             :       libtcod.white,
-                "NAME"              :       "Plain Amulet",
-                "BLOCKS"            :       False,
-                "FIGHTER"           :       False,
-                "STAIRS"            :       False,
-                "EQUIPMENT"         :       True,
-                "EQ_TYPE"           :       3, #weapon
-                "EQ_STAT"           :       "HP",
-                "EQ_STAT_CHANGE"    :       0,
-                "DESCRIPTION"       :       "A normal amulet"
-
-            }
-        self.entities.append(tmp_entity)
-        tmp_entity = {
-                "X"                 :       10,
-                "Y"                 :       8,
-                "CHAR"              :       "a",
-                "COLOR"             :       libtcod.white,
-                "NAME"              :       "Plain Leather Cuirass",
-                "BLOCKS"            :       False,
-                "FIGHTER"           :       False,
-                "STAIRS"            :       False,
-                "EQUIPMENT"         :       True,
-                "EQ_TYPE"           :       4, #weapon
-                "EQ_STAT"           :       "DEFENSE",
-                "EQ_STAT_CHANGE"    :       0,
-                "DESCRIPTION"       :       "A normal leather armor peice"
-
-            }
-        self.entities.append(tmp_entity)
+        #Fighter Trainer
         new_room = Rect(3, 17, 6, 9)
         self.create_building(new_room, "top")
         rooms.append(new_room)
+        self.entities.append(get_static_entity(6)) #Jeff the item man
+
+
+
+
         new_room = Rect(16, 5, 12, 8)
         self.create_building(new_room, "bottom")
         rooms.append(new_room)
