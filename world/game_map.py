@@ -56,15 +56,18 @@ class MapGenerator:
         new_room = Rect(3, 3, 10, 10)
         self.create_building(new_room, "bottom")
         rooms.append(new_room)
+
         tmp_entity = {
-            "X"         :       7,
-            "Y"         :       5,
-            "CHAR"      :       "@",
-            "COLOR"     :       libtcod.yellow,
-            "NAME"      :       "ShopKeeper",
-            "BLOCKS"    :       True,
-            "FIGHTER"   :       False,
-            "STAIRS"    :       False
+            "X"             :       7,
+            "Y"             :       5,
+            "CHAR"          :       "@",
+            "COLOR"         :       libtcod.yellow,
+            "NAME"          :       "ShopKeeper",
+            "BLOCKS"        :       True,
+            "FIGHTER"       :       False,
+            "STAIRS"        :       False,
+            "DIALOG"        :       True,
+            "DIALOG_LINE"   :   "Please take these items."
         }
         self.entities.append(tmp_entity)
         tmp_entity = {
