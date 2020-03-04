@@ -1,3 +1,5 @@
+import libtcodpy as libtcod
+
 def get_static_entity(id):
     if id == 1:
         tmp_entity = {
