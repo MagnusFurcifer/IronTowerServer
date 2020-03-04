@@ -99,3 +99,17 @@ def get_static_entity(id):
             "DIALOG_LINE"   :       "Be careful in the tower. Monsters turn red just before they attack!"
         }
         return tmp_entity
+    elif id == 7:
+        tmp_entity = {
+            "X"             :       20,
+            "Y"             :       7,
+            "CHAR"          :       "@",
+            "COLOR"         :       libtcod.yellow,
+            "NAME"          :       "John",
+            "BLOCKS"        :       True,
+            "FIGHTER"       :       False,
+            "STAIRS"        :       False,
+            "DIALOG"        :       True,
+            "DIALOG_LINE"   :       "Watch the monsters from a distance, learn their patterns. Thats how to win."
+        }
+        return tmp_entity

@@ -68,14 +68,14 @@ class MapGenerator:
         new_room = Rect(3, 17, 6, 9)
         self.create_building(new_room, "top")
         rooms.append(new_room)
-        self.entities.append(get_static_entity(6)) #Jeff the item man
-
-
+        self.entities.append(get_static_entity(6)) #Lizzy tells you about stuff
 
 
         new_room = Rect(16, 5, 12, 8)
         self.create_building(new_room, "bottom")
         rooms.append(new_room)
+        self.entities.append(get_static_entity(7)) #So does John
+
         new_room = Rect(12, 17, 8, 14)
         self.create_building(new_room, "top")
         rooms.append(new_room)
