@@ -1,10 +1,12 @@
 import libtcodpy as libtcod
 import random
+import it_config
 
 class NPCFactory:
     def __init__(self, type, level):
         self.type = type
         self.level = level
+        random.seed(it_config.random_seed)
 
     def get_monster(self, x, y):
         monster_types = ["GOB", "ZOM", "MUSH"]
@@ -30,6 +32,7 @@ class MonsterFactory:
     def __init__(self, type, level):
         self.type = type
         self.level = level
+        random.seed(it_config.random_seed)
 
     def get_monster(self, x, y):
         monster_types = ["GOB", "ZOM", "MUSH"]
@@ -69,6 +72,7 @@ class EquipmentFactory:
     def __init__(self, type, level):
         self.type = type
         self.level = level
+        random.seed(it_config.random_seed)
 
     def get_random_equipment(self, x, y):
         tmp_entity = {

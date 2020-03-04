@@ -27,6 +27,7 @@ class MapGenerator:
         self.entities = []
         self.playerStartX = int(self.width / 2)
         self.playerStartY = int(self.height / 2)
+        random.seed(it_config.random_seed)
 
     def initialize_tiles(self):
         tiles = [[Tile(True) for y in range(self.height)] for x in range(self.width)]
