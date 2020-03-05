@@ -28,7 +28,7 @@ def insert_event(conn, event_text, event_date):
     c = conn.cursor()
     c.execute("INSERT INTO events (event_text, event_date) VALUES (?, ?);", (event_text, event_date))
     print(c.lastrowid)
-    c.commit()
+    conn.commit()
 
 def create_tables(conn):
     event_table = "CREATE TABLE IF NOT EXISTS events ( " \
@@ -39,7 +39,7 @@ def create_tables(conn):
     try:
         c = conn.cursor()
         c.execute(event_table)
-        c.commit()
+        conn.commit()
     except Error as e:
         print(e)
 
