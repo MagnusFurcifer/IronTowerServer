@@ -94,7 +94,7 @@ async def main(host, port):
     async with server:
         await server.serve_forever()
 
-#DB
+#DB init
 con = create_con()
 create_tables(con)
 #Start Web server
