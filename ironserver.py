@@ -5,8 +5,8 @@ import json
 import socket
 from world.game_map import GameMap, MapGenerator
 import it_config
-import SimpleHTTPServer
-import SocketServer
+import http.server
+import socketserver
 import sqlite3
 from sqlite3 import Error
 from datetime import datetime
@@ -51,8 +51,8 @@ def get_events(conn):
 #Web server
 def start_web_server():
     os.chdir(it_config.ironweb_path)
-    httpd = HTTPServer(('', it_config.ironweb_port), CGIHTTPRequestHandler)
-    httpd.serve_forever()
+    with socketserver.TCPServer(('', it_config.ironweb_port), http.server.SimpleHttpRequestHandler) as httpd:
+        httpd.serve_forever()
 
 def worker_proc():
     con = create_con()
