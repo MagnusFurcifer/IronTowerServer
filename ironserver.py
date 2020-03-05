@@ -16,6 +16,7 @@ def create_con():
     """ create a database connection to a SQLite database """
     conn = None
     try:
+        print("Creating connection to DB at: " + it_config.db_path)
         conn = sqlite3.connect(it_config.db_path, check_same_thread = False)
         print(sqlite3.version)
     except Error as e:
