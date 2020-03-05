@@ -5,15 +5,12 @@ import json
 import socket
 from world.game_map import GameMap, MapGenerator
 import it_config
-import http.server
-import socketserver
+import time
 import sqlite3
 from sqlite3 import Error
 from datetime import datetime
-import time
 import threading
 import os
-
 
 def create_con():
     """ create a database connection to a SQLite database """
@@ -47,12 +44,6 @@ def get_events(conn):
     c.execute("SELECT * FROM events")
     rows = c.fetchall()
     return rows
-
-#Web server
-def start_web_server():
-    os.chdir(it_config.ironweb_path)
-    with socketserver.TCPServer(('', it_config.ironweb_port), http.server.SimpleHTTPRequestHandler) as httpd:
-        httpd.serve_forever()
 
 def worker_proc():
     con = create_con()
@@ -98,11 +89,7 @@ async def main(host, port):
 #DB init
 con = create_con()
 create_tables(con)
-#Start Web server
-daemon = threading.Thread(name='IronTower Web Server',target=start_web_server)
-daemon.setDaemon(True)
-daemon.start()
-#Thread that updates the website
+#Thread that updates the website dir
 daemon = threading.Thread(name='IronTower Worker',target=start_worker)
 daemon.setDaemon(True)
 daemon.start()
