@@ -84,8 +84,9 @@ async def echo_server(reader, writer):
         event = "Map generated at: " + str(command.get("TYPE")) + " on level: " + str(command.get("LEVEL"))
         writer.write(json.dumps(gendmap).encode())
         await writer.drain()  # Flow control, see later
-    elif command.get("COMMAND") == "ASCEND":
-        event = "Player has ascneded to level " + str(command.get("ASC_LEVEL")) + " of the " + str(command.get("ASC_TYPE"))
+    elif command.get("COMMAND") == "EVENT":
+        if command.get("TYPE") == "ASCEND":
+            event = "Player has ascneded to level " + str(command.get("ASC_LEVEL")) + " of the " + str(command.get("ASC_TYPE"))
     writer.close()
     if event is not None:
         print("Inserting event: " + event)
