@@ -88,6 +88,7 @@ async def echo_server(reader, writer):
         event = "Player has ascneded to level " + str(command.get("ASC_LEVEL")) + " of the " + str(command.get("ASC_TYPE"))
     writer.close()
     if event is not None:
+        print("Inserting event: " + event)
         now = datetime.now()
         date_time = now.strftime("%m/%d/%Y, %H:%M:%S")
         con = create_con()
