@@ -14,7 +14,6 @@ import os
 
 def create_con():
     """ create a database connection to a SQLite database """
-    os.chdir(it_config.iron_root)
     conn = None
     try:
         conn = sqlite3.connect(it_config.db_path, check_same_thread = False)
