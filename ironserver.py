@@ -26,6 +26,7 @@ def insert_event(conn, event_text, event_date):
     print("We doin a cheeky insert: " + event_text + event_date)
     c = conn.cursor()
     c.execute("INSERT INTO events (event_text, event_date) VALUES (?, ?);", (event_text, event_date))
+    print(c.lastrowid)
 
 def create_tables(conn):
     event_table = "CREATE TABLE IF NOT EXISTS events ( " \
@@ -75,10 +76,10 @@ async def echo_server(reader, writer):
     writer.write(json.dumps(gendmap).encode())
     await writer.drain()  # Flow control, see later
     writer.close()
-    now = datetime.now()
-    date_time = now.strftime("%m/%d/%Y, %H:%M:%S")
-    con = create_con()
     if event is not None:
+        now = datetime.now()
+        date_time = now.strftime("%m/%d/%Y, %H:%M:%S")
+        con = create_con()
         insert_event(con, str(event), date_time)
 
 async def main(host, port):
