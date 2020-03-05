@@ -56,8 +56,11 @@ def worker_proc():
     results = []
     for row in rows:
         results.append(row[1] + " " + row[2])
+    page = "<html>"
+    page = page + "<br>".join(results)
+    page = page + "</html>"
     with open(path, "w") as f:
-        f.write("\n".join(results))
+        f.write(page)
 
 def start_worker():
     while True:
