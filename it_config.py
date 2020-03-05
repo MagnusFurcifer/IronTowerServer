@@ -26,4 +26,4 @@ ironserver_host = '0.0.0.0'  # The server's hostname or IP address
 ironserver_port = 8080        # The port used by the server
 ironweb_port = 8000 #Web server to display logs
 ironweb_path = "./httpd/"
-db_path = os.getcwd() + "ironserver.db"
+db_path = os.getcwd() + "/ironserver.db"
