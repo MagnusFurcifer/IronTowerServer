@@ -23,7 +23,7 @@ def create_con():
     return conn
 
 def insert_event(conn, event_text, event_date):
-    sql = "INSERT INTO events (event_text, event_date) VALUES (" \
+    sql = "INSERT INTO events (event_text, event_date) VALUES (" + \
             event_text + "," + \
             event_date + \
             ")"
