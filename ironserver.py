@@ -25,8 +25,8 @@ def create_con():
     return conn
 
 def insert_event(conn, event_text, event_date):
-    c = conn.cursor("INSERT INTO events (event_text, event_date) VALUES (?, ?);", (event_text, event_date))
-    c.execute(sql)
+    c = conn.cursor()
+    c.execute("INSERT INTO events (event_text, event_date) VALUES (?, ?);", (event_text, event_date))
 
 def create_tables(conn):
     event_table = "CREATE TABLE IF NOT EXISTS events ( " \
