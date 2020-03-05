@@ -78,16 +78,19 @@ async def echo_server(reader, writer):
         command = "Invalid Command"
     addr = writer.get_extra_info('peername')
     print("Connection from: " + str(addr) + " - Command: " + str(command))
+    event = None
     if command.get("COMMAND") == "MAPGEN":
         MapGen = MapGenerator(it_config.map_width, it_config.map_height, command.get("TYPE"), command.get("LEVEL"))
         gendmap = MapGen.generate_map(it_config.max_rooms, it_config.room_min_size, it_config.room_max_size)
+        event = "Map generated at: " + str(command.get("TYPE") + " on level: " + command.get("LEVEL"))
     writer.write(json.dumps(gendmap).encode())
     await writer.drain()  # Flow control, see later
     writer.close()
     now = datetime.now()
     date_time = now.strftime("%m/%d/%Y, %H:%M:%S")
     con = create_con()
-    insert_event(con, str(command), date_time)
+    if event is not None:
+        insert_event(con, str(event), date_time)
 
 async def main(host, port):
     server = await asyncio.start_server(echo_server, host, port)
