@@ -82,7 +82,7 @@ async def echo_server(reader, writer):
     if command.get("COMMAND") == "MAPGEN":
         MapGen = MapGenerator(it_config.map_width, it_config.map_height, command.get("TYPE"), command.get("LEVEL"))
         gendmap = MapGen.generate_map(it_config.max_rooms, it_config.room_min_size, it_config.room_max_size)
-        event = "Map generated at: " + str(command.get("TYPE") + " on level: " + command.get("LEVEL"))
+        event = "Map generated at: " + str(command.get("TYPE")) + " on level: " + str(command.get("LEVEL"))
     writer.write(json.dumps(gendmap).encode())
     await writer.drain()  # Flow control, see later
     writer.close()
