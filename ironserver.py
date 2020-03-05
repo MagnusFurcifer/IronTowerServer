@@ -53,8 +53,10 @@ def worker_proc():
     con = create_con()
     rows = get_events(con)
     path = it_config.ironweb_path + "index.html"
-    with open(path, "w") as f:
-        f.write("\n".join(rows))
+    for row in rows:
+        print row
+    #with open(path, "w") as f:
+        #f.write("\n".join(rows))
 
 def start_worker():
     while True:
