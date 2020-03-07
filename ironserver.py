@@ -32,13 +32,13 @@ def insert_event(conn, event_text, event_date):
     print(c.lastrowid)
     conn.commit()
 
-def insert_ghost(conn, client_id, x, y, world, level, last_update):
+def insert_ghost(conn, client_id, x, y, world, level):
     c = conn.cursor()
     c.execute("DELETE FROM ghosts WHERE client_id=?;", (client_id,))
     print(c.lastrowid)
     conn.commit()
     c = conn.cursor()
-    c.execute("INSERT INTO ghosts (client_id, x, y, world, level, last_update) VALUES (?, ?, ?, ?, ?, ?);", (client_id, x, y, world, level, last_update))
+    c.execute("INSERT INTO ghosts (client_id, x, y, world, level, last_update) VALUES (?, ?, ?, ?, ?, datetime('now'));", (client_id, x, y, world, level))
     print(c.lastrowid)
     conn.commit()
 
@@ -61,7 +61,7 @@ def create_tables(conn):
                     "y int, " \
                     "world text, " \
                     "level int, " \
-                    "last_update timestamp" \
+                    "last_update text" \
                     ");"
     try:
         c = conn.cursor()
@@ -98,9 +98,9 @@ def parse_ghosts(client_id, rows):
     return resp
 
 def delete_old_ghosts(conn):
-    delete_time = datetime.now() - timedelta(seconds=60)
+    print("DELETING OLD GHOSTS")
     c = conn.cursor()
-    c.execute("DELETE FROM ghosts WHERE last_update < ?", (delete_time,))
+    c.execute("DELETE FROM ghosts WHERE (last_update <= datetime('now', '-1 minutes'))")
     conn.commit()
 
 def worker_proc():
@@ -147,7 +147,7 @@ async def echo_server(reader, writer):
         id_string = str(addr[0]) + command.get("NAME")
         client_id = hashlib.sha1(id_string.encode()).hexdigest()
         con = create_con()
-        insert_ghost(con, client_id, command.get("x"), command.get("y"), command.get("WORLD"), command.get("LEVEL"), datetime.now())
+        insert_ghost(con, client_id, command.get("x"), command.get("y"), command.get("WORLD"), command.get("LEVEL"))
         g = get_ghosts(con, command.get("WORLD"), command.get("LEVEL"))
         print(g)
         pg = parse_ghosts(client_id, g)
