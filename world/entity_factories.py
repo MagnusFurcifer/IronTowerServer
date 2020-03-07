@@ -35,7 +35,7 @@ class MonsterFactory:
         random.seed(it_config.random_seed)
 
     def get_monster(self, x, y):
-        monster_types = ["GOB", "ZOM", "MUSH"]
+        monster_types = ["GOB", "ZOM", "MUSH", "KOB"]
         tmp_entity = {
                     "X"             :       x,
                     "Y"             :       y,
@@ -66,6 +66,11 @@ class MonsterFactory:
             tmp_entity["NAME"] = "Mushroom"
             tmp_entity["AI_PACKAGE"] = "Static"
             tmp_entity["CHAR"] = "M"
+        elif mon_type == "KOB":
+            print("Mush")
+            tmp_entity["NAME"] = "Kobold"
+            tmp_entity["AI_PACKAGE"] = "LongRNGBounce"
+            tmp_entity["CHAR"] = "K"
         return tmp_entity
 
 class ItemFactory():

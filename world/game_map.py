@@ -33,13 +33,13 @@ class MapGenerator:
         tiles = [[Tile(True) for y in range(self.height)] for x in range(self.width)]
         return tiles
 
-    def generate_map(self):
+    def generate_map(self, highest_level):
         if self.type == "DUNGEON":
             return self.gen_dungeon()
         elif self.type == "TOWN":
-            return self.gen_town()
+            return self.gen_town(highest_level)
 
-    def gen_town(self):
+    def gen_town(self, highest_level):
 
         #Move PC up a bit to the park
         self.playerStartY = self.playerStartY - 10
@@ -59,27 +59,29 @@ class MapGenerator:
         new_room = Rect(3, 3, 10, 10)
         self.create_building(new_room, "bottom")
         rooms.append(new_room)
-        self.entities.append(get_static_entity(1)) #Jeff the item man
-        self.entities.append(get_static_entity(2)) #Plan Ring
-        self.entities.append(get_static_entity(3)) #Plain Sword
-        self.entities.append(get_static_entity(4)) #Plan Amulet
-        self.entities.append(get_static_entity(5)) #Plain armor
+        self.entities.append(get_static_entity(1, highest_level)) #Jeff the item man
+        self.entities.append(get_static_entity(2, highest_level)) #Plan Ring
+        self.entities.append(get_static_entity(3, highest_level)) #Plain Sword
+        self.entities.append(get_static_entity(4, highest_level)) #Plan Amulet
+        self.entities.append(get_static_entity(5, highest_level)) #Plain armor
 
         #Fighter Trainer
         new_room = Rect(3, 17, 6, 9)
         self.create_building(new_room, "top")
         rooms.append(new_room)
-        self.entities.append(get_static_entity(6)) #Lizzy tells you about stuff
+        self.entities.append(get_static_entity(6, highest_level)) #Lizzy tells you about stuff
 
 
         new_room = Rect(16, 5, 12, 8)
         self.create_building(new_room, "bottom")
         rooms.append(new_room)
-        self.entities.append(get_static_entity(7)) #So does John
+        self.entities.append(get_static_entity(7, highest_level)) #So does John
 
         new_room = Rect(12, 17, 8, 14)
         self.create_building(new_room, "top")
         rooms.append(new_room)
+        self.entities.append(get_static_entity(8, highest_level)) #I see
+
 
         new_room = Rect(40, 10, 10, 10)
         self.create_building(new_room, "left")
@@ -129,8 +131,12 @@ class MapGenerator:
 
         for r in range(max_rooms):
             # random width and height
-            w = random.randint(room_min_size, room_max_size)
-            h = random.randint(room_min_size, room_max_size)
+            if num_rooms == 0:
+                w = 10
+                h = 10
+            else:
+                w = random.randint(room_min_size, room_max_size)
+                h = random.randint(room_min_size, room_max_size)
 
             # random position without going out of the boundaries of the map
             x = random.randint(0, self.width - w - 1)
@@ -219,7 +225,7 @@ class MapGenerator:
 
                         # finally, append the new room to the list
                 self.place_monsters(new_room, max_monsters_per_room)
-                self.place_equipment(new_room, 1) #Place items
+                self.place_equipment(new_room, it_config.base_max_kit + int(self.level * 0.7)) #Place items
                 self.place_items(new_room)
 
                 rooms.append(new_room)
@@ -266,7 +272,7 @@ class MapGenerator:
 
         itemgen = ItemFactory(self.type, self.level)
 
-        if random.randint(0, 100) < (20 + int(self.level * 1.5)): #20% chance of spawning a potion
+        if random.randint(0, 100) < (20 + int(self.level * 0.5)): #20% chance of spawning a potion
             x = random.randint(room.x1 + 1, room.x2 - 1)
             y = random.randint(room.y1 + 1, room.y2 - 1)
             if not any([entity for entity in self.entities if entity.get("X") == x and entity.get("Y") == y]):

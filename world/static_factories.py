@@ -1,6 +1,6 @@
 import libtcodpy as libtcod
 
-def get_static_entity(id):
+def get_static_entity(id, highest_level):
     if id == 1:
         tmp_entity = {
             "X"             :       8,
@@ -111,5 +111,19 @@ def get_static_entity(id):
             "STAIRS"        :       False,
             "DIALOG"        :       True,
             "DIALOG_LINE"   :       "Watch the monsters from a distance, learn their patterns. Thats how to win."
+        }
+        return tmp_entity
+    elif id == 8:
+        tmp_entity = {
+            "X"             :       15,
+            "Y"             :       20,
+            "CHAR"          :       "@",
+            "COLOR"         :       libtcod.yellow,
+            "NAME"          :       "Cynthia",
+            "BLOCKS"        :       True,
+            "FIGHTER"       :       False,
+            "STAIRS"        :       False,
+            "DIALOG"        :       True,
+            "DIALOG_LINE"   :       "Nobody has been past level " + str(highest_level)
         }
         return tmp_entity

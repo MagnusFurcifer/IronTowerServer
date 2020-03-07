@@ -16,6 +16,7 @@ room_min_size = 3
 max_rooms = 60
 max_spread = 5
 max_monsters_per_room = 3
+base_max_kit = 1
 
 colors = {
     'dark_wall': libtcod.Color(0, 0, 100),

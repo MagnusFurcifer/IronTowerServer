@@ -25,10 +25,10 @@ def create_con():
         print(e)
     return conn
 
-def insert_event(conn, event_text, event_date):
-    print("We doin a cheeky insert: " + event_text + event_date)
+def insert_event(conn, event_text):
+    print("We doin a cheeky insert: " + event_text)
     c = conn.cursor()
-    c.execute("INSERT INTO events (event_text, event_date) VALUES (?, ?);", (event_text, event_date))
+    c.execute("INSERT INTO events (event_text, event_date) VALUES (?, datetime('now'));", (event_text,))
     print(c.lastrowid)
     conn.commit()
 
@@ -69,12 +69,64 @@ def create_tables(conn):
         conn.commit()
     except Error as e:
         print(e)
+    ghost_table = "CREATE TABLE IF NOT EXISTS top_level ( " \
+                    "id integer PRIMARY KEY, " \
+                    "level int, " \
+                    "seed text, " \
+                    "date_reached text" \
+                    ");"
+    try:
+        c = conn.cursor()
+        c.execute(ghost_table)
+        conn.commit()
+    except Error as e:
+        print(e)
+    c = conn.cursor()
+    c.execute("INSERT INTO top_level (level, seed, date_reached) VALUES (?, ?, datetime('now'));", (1, "IRONTOWER"))
+    conn.commit()
+
+def get_top_level(conn):
+    c = conn.cursor()
+    c.execute("SELECT * FROM top_level LIMIT 1")
+    rows = c.fetchall()
+    top_level = 1
+    for row in rows:
+        top_level = row[1]
+    return top_level
+
+def get_top_level_seed(conn):
+    c = conn.cursor()
+    c.execute("SELECT * FROM top_level LIMIT 1")
+    rows = c.fetchall()
+    top_level = 1
+    for row in rows:
+        top_level = row[2]
+    return top_level
+
+def update_seed(conn, new_level, player_name):
+    c = conn.cursor()
+    c.execute("UPDATE top_level SET level=?, seed=?, date_reached=datetime('now')", (new_level, player_name))
+    print(c.lastrowid)
+    conn.commit()
+    it_config.random_seed = player_name
 
 def get_events(conn):
     c = conn.cursor()
     c.execute("SELECT * FROM events")
     rows = c.fetchall()
     return rows
+
+def get_latest_event(conn):
+    c = conn.cursor()
+    c.execute("SELECT * FROM events ORDER BY event_date DESC LIMIT 1")
+    rows = c.fetchall()
+    latest_event = {
+        "TYPE"   :   "EVENT"
+    }
+    for row in rows:
+        latest_event["EVENT"] = row[1]
+        latest_event["WHEN"] = row[2]
+    return latest_event
 
 def get_ghosts(conn, world, level):
     c = conn.cursor()
@@ -136,13 +188,21 @@ async def echo_server(reader, writer):
     print("Connection from: " + str(addr) + " - Command: " + str(command))
     event = None
     if command.get("COMMAND") == "MAPGEN":
+        con = create_con()
+        highest_level = get_top_level(con)
         MapGen = MapGenerator(command.get("TYPE"), command.get("LEVEL"))
-        gendmap = MapGen.generate_map()
+        gendmap = MapGen.generate_map(highest_level)
         writer.write(json.dumps(gendmap).encode())
         await writer.drain()  # Flow control, see later
     elif command.get("COMMAND") == "EVENT":
         if command.get("TYPE") == "ASCEND":
-            event =  str(command.get("ASC_PNAME")) + " has ascneded to level " + str(command.get("ASC_LEVEL")) + " of the " + str(command.get("ASC_TYPE"))
+            con = create_con()
+            if command.get("ASC_LEVEL") > get_top_level(con):
+                event =  str(command.get("ASC_PNAME")) + " has ascended to the highest level yet. The tower reacts."
+                update_seed(con, command.get("ASC_LEVEL"), command.get("ASC_PNAME"))
+            else:
+                event =  str(command.get("ASC_PNAME")) + " has ascended to level " + str(command.get("ASC_LEVEL")) + " of the " + str(command.get("ASC_TYPE"))
+
     elif command.get("COMMAND") == "TICK":
         id_string = str(addr[0]) + command.get("NAME")
         client_id = hashlib.sha1(id_string.encode()).hexdigest()
@@ -152,16 +212,18 @@ async def echo_server(reader, writer):
         print(g)
         pg = parse_ghosts(client_id, g)
         print(pg)
-
         writer.write(json.dumps(pg).encode())
         await writer.drain()
+    elif command.get("COMMAND") == "GETEVENT":
+        con = create_con()
+        writer.write(json.dumps(get_latest_event(con)).encode())
+        await writer.drain()
+
     writer.close()
     if event is not None:
         print("Inserting event: " + event)
-        now = datetime.now()
-        date_time = now.strftime("%m/%d/%Y, %H:%M:%S")
         con = create_con()
-        insert_event(con, str(event), date_time)
+        insert_event(con, str(event))
 
 async def main(host, port):
     server = await asyncio.start_server(echo_server, host, port)
@@ -171,6 +233,7 @@ async def main(host, port):
 #DB init
 con = create_con()
 create_tables(con)
+it_config.random_seed = get_top_level_seed(con)
 #Thread that updates the website dir
 daemon = threading.Thread(name='IronTower Worker',target=start_worker)
 daemon.setDaemon(True)
