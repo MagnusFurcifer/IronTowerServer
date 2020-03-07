@@ -11,9 +11,11 @@ map_width = 80
 map_height = 43
 
 # Some variables for the rooms in the map
-room_max_size = 10
-room_min_size = 6
-max_rooms = 30
+room_max_size = 7
+room_min_size = 3
+max_rooms = 60
+max_spread = 5
+max_monsters_per_room = 3
 
 colors = {
     'dark_wall': libtcod.Color(0, 0, 100),

@@ -9,8 +9,10 @@ import time
 import sqlite3
 from sqlite3 import Error
 from datetime import datetime
+from datetime import timedelta
 import threading
 import os
+import hashlib
 
 def create_con():
     """ create a database connection to a SQLite database """
@@ -30,6 +32,16 @@ def insert_event(conn, event_text, event_date):
     print(c.lastrowid)
     conn.commit()
 
+def insert_ghost(conn, client_id, x, y, world, level, last_update):
+    c = conn.cursor()
+    c.execute("DELETE FROM ghosts WHERE client_id=?;", (client_id,))
+    print(c.lastrowid)
+    conn.commit()
+    c = conn.cursor()
+    c.execute("INSERT INTO ghosts (client_id, x, y, world, level, last_update) VALUES (?, ?, ?, ?, ?, ?);", (client_id, x, y, world, level, last_update))
+    print(c.lastrowid)
+    conn.commit()
+
 def create_tables(conn):
     event_table = "CREATE TABLE IF NOT EXISTS events ( " \
                     "id integer PRIMARY KEY, " \
@@ -42,12 +54,54 @@ def create_tables(conn):
         conn.commit()
     except Error as e:
         print(e)
+    ghost_table = "CREATE TABLE IF NOT EXISTS ghosts ( " \
+                    "id integer PRIMARY KEY, " \
+                    "client_id text, " \
+                    "x int, " \
+                    "y int, " \
+                    "world text, " \
+                    "level int, " \
+                    "last_update timestamp" \
+                    ");"
+    try:
+        c = conn.cursor()
+        c.execute(ghost_table)
+        conn.commit()
+    except Error as e:
+        print(e)
 
 def get_events(conn):
     c = conn.cursor()
     c.execute("SELECT * FROM events")
     rows = c.fetchall()
     return rows
+
+def get_ghosts(conn, world, level):
+    c = conn.cursor()
+    c.execute("SELECT * FROM ghosts WHERE world=? AND level=? LIMIT 10", (world, level))
+    rows = c.fetchall()
+    return rows
+
+def parse_ghosts(client_id, rows):
+    resp = {
+        "TYPE"      :       "GHOSTS"
+    }
+    ghost_list = []
+    for row in rows:
+        if row[1] != client_id:
+            tmp_ghost = {
+                "x"     :       row[2],
+                "y"     :       row[3]
+            }
+            ghost_list.append(tmp_ghost)
+    resp["GHOST_LIST"] = ghost_list
+    return resp
+
+def delete_old_ghosts(conn):
+    delete_time = datetime.now() - timedelta(seconds=60)
+    c = conn.cursor()
+    c.execute("DELETE FROM ghosts WHERE last_update < ?", (delete_time,))
+    conn.commit()
 
 def worker_proc():
     con = create_con()
@@ -61,6 +115,9 @@ def worker_proc():
     page = page + "</html>"
     with open(path, "w") as f:
         f.write(page)
+    #Clean up old GHOSTS
+    con = create_con()
+    delete_old_ghosts(con)
 
 def start_worker():
     while True:
@@ -69,7 +126,7 @@ def start_worker():
 
 #Game Server
 async def echo_server(reader, writer):
-    data = await reader.read(100)  # Max number of bytes to read
+    data = await reader.read(1000)  # Max number of bytes to read
     message = data.decode()
     try:
         command = json.loads(message)
@@ -79,13 +136,25 @@ async def echo_server(reader, writer):
     print("Connection from: " + str(addr) + " - Command: " + str(command))
     event = None
     if command.get("COMMAND") == "MAPGEN":
-        MapGen = MapGenerator(it_config.map_width, it_config.map_height, command.get("TYPE"), command.get("LEVEL"))
-        gendmap = MapGen.generate_map(it_config.max_rooms, it_config.room_min_size, it_config.room_max_size)
+        MapGen = MapGenerator(command.get("TYPE"), command.get("LEVEL"))
+        gendmap = MapGen.generate_map()
         writer.write(json.dumps(gendmap).encode())
         await writer.drain()  # Flow control, see later
     elif command.get("COMMAND") == "EVENT":
         if command.get("TYPE") == "ASCEND":
             event =  str(command.get("ASC_PNAME")) + " has ascneded to level " + str(command.get("ASC_LEVEL")) + " of the " + str(command.get("ASC_TYPE"))
+    elif command.get("COMMAND") == "TICK":
+        id_string = str(addr[0]) + command.get("NAME")
+        client_id = hashlib.sha1(id_string.encode()).hexdigest()
+        con = create_con()
+        insert_ghost(con, client_id, command.get("x"), command.get("y"), command.get("WORLD"), command.get("LEVEL"), datetime.now())
+        g = get_ghosts(con, command.get("WORLD"), command.get("LEVEL"))
+        print(g)
+        pg = parse_ghosts(client_id, g)
+        print(pg)
+
+        writer.write(json.dumps(pg).encode())
+        await writer.drain()
     writer.close()
     if event is not None:
         print("Inserting event: " + event)

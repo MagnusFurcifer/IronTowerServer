@@ -68,6 +68,37 @@ class MonsterFactory:
             tmp_entity["CHAR"] = "M"
         return tmp_entity
 
+class ItemFactory():
+    def __init__(self, type, level):
+        self.type = type
+        self.level = level
+        random.seed(it_config.random_seed)
+
+
+    def get_random_item(self, x, y):
+        tmp_entity = {
+                    "X"                 :       x,
+                    "Y"                 :       y,
+                    "CHAR"              :       "!",
+                    "COLOR"             :       libtcod.purple,
+                    "NAME"              :       "Potion",
+                    "BLOCKS"            :       False,
+                    "FIGHTER"           :       False,
+                    "STAIRS"            :       False,
+                    "ITEM"              :       True,
+                    "IT_TYPE"           :       "POTION", #weapon
+                    "IT_STAT"           :       "HP",
+                    "IT_STAT_CHANGE"    :       random.randint(1, 1 + int(self.level * .3)),
+                    "DESCRIPTION"       :       "A potion of health"
+                    }
+        if random.randint(0, 100) < 5: #5% chance for a stat potion
+            tmp_entity["IT_STAT"] = random.choice(["ATTACK", "DEFENSE", "MAXHP"])
+            tmp_entity["IT_STAT_CHANGE"] = random.randint(0, self.level)
+            tmp_entity["NAME"] = "Stat Potion"
+            tmp_entity["DESCRIPTION"] = "Permantley raise " + tmp_entity["IT_STAT"] + " by " + str(tmp_entity["IT_STAT_CHANGE"])
+
+        return tmp_entity
+
 class EquipmentFactory:
     def __init__(self, type, level):
         self.type = type
@@ -122,7 +153,7 @@ class EquipmentFactory:
             tmp_entity["CHAR"] = "a"
             tmp_entity["DESCRIPTION"] = "A Peice of Armor"
 
-        tmp_entity["EQ_STAT_CHANGE"] = random.randint(0, self.level)
+        tmp_entity["EQ_STAT_CHANGE"] = random.randint(0, int(self.level * 1.5))
         equipment_name = equipment_name + " of " + tmp_entity["EQ_STAT"].lower() + " + " + str(tmp_entity["EQ_STAT_CHANGE"])
         tmp_entity['NAME'] = equipment_name
         return tmp_entity
