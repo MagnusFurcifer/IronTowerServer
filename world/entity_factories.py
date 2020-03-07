@@ -56,21 +56,25 @@ class MonsterFactory:
             tmp_entity["NAME"] = "Goblin"
             tmp_entity["AI_PACKAGE"] = "Chase"
             tmp_entity["CHAR"] = "G"
+            tmp_entity["FIGHTER_HP"] = 2 + int(self.level * 1.5)
         elif mon_type == "ZOM":
             print("Zom")
             tmp_entity["NAME"] = "Zombie"
             tmp_entity["AI_PACKAGE"] = "Bounce"
             tmp_entity["CHAR"] = "Z"
+            tmp_entity["FIGHTER_HP"] = 1 + int(self.level * 1.5)
         elif mon_type == "MUSH":
             print("Mush")
             tmp_entity["NAME"] = "Mushroom"
             tmp_entity["AI_PACKAGE"] = "Static"
             tmp_entity["CHAR"] = "M"
+            tmp_entity["FIGHTER_HP"] = 5 + int(self.level * 1.5)
         elif mon_type == "KOB":
             print("Mush")
             tmp_entity["NAME"] = "Kobold"
             tmp_entity["AI_PACKAGE"] = "LongRNGBounce"
             tmp_entity["CHAR"] = "K"
+            tmp_entity["FIGHTER_HP"] = 1 + int(self.level * 1.5)
         return tmp_entity
 
 class ItemFactory():
@@ -158,7 +162,7 @@ class EquipmentFactory:
             tmp_entity["CHAR"] = "a"
             tmp_entity["DESCRIPTION"] = "A Peice of Armor"
 
-        tmp_entity["EQ_STAT_CHANGE"] = random.randint(0, int(self.level * 1.5))
+        tmp_entity["EQ_STAT_CHANGE"] = random.randint(0, int(self.level * 0.7))
         equipment_name = equipment_name + " of " + tmp_entity["EQ_STAT"].lower() + " + " + str(tmp_entity["EQ_STAT_CHANGE"])
         tmp_entity['NAME'] = equipment_name
         return tmp_entity
